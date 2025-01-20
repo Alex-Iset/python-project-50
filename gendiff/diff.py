@@ -6,7 +6,7 @@ def generate_diff(file_path1, file_path2):
         dict1 = json.load(f1)
         dict2 = json.load(f2)
     result = []
-    for key in {**dict1, **dict2}:
+    for key in sorted(set(dict1.keys()) | set(dict2.keys())):
         if key in dict1 and key in dict2:
             if dict1[key] == dict2[key]:
                 result.append(f'  {key}: {dict1[key]}')
