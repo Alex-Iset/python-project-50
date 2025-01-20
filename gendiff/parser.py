@@ -1,7 +1,6 @@
 import argparse
-import json
 
-from gendiff import diff
+from gendiff import diff, load_json
 
 
 def read_and_pars():
@@ -21,7 +20,7 @@ def read_and_pars():
     parser.add_argument('-f', '--format', help='set format of output')
     args = parser.parse_args()
     if args.file:
-        with open(args.file) as f:
-            print(json.load(f))
+        print(load_json(args.file))
     if args.diff:
-        print(diff(*args.diff))
+        arg1, arg2 = args.diff
+        print(diff(load_json(arg1), load_json(arg2)))

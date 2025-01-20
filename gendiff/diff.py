@@ -1,23 +1,19 @@
-import json
+def gen_diff_str(key, value, prefix):
+    return f'{prefix} {key}: {value}'
 
 
-def load_json_file(path):
-    with open(path) as f:
-        return json.load(f)
-
-
-def generate_diff(file_path1, file_path2):
-    dict1, dict2 = load_json_file(file_path1), load_json_file(file_path2)
+def generate_diff(dict1, dict2):
+    uniq_keys = sorted(set(dict1.keys()) | set(dict2.keys()))
     result = []
-    for key in sorted(set(dict1.keys()) | set(dict2.keys())):
+    for key in uniq_keys:
         if key in dict1 and key in dict2:
             if dict1[key] == dict2[key]:
-                result.append(f'  {key}: {dict1[key]}')
+                result.append(gen_diff_str(key, dict1[key], ' '))
             else:
-                result.append(f'- {key}: {dict1[key]}')
-                result.append(f'+ {key}: {dict2[key]}')
+                result.append(gen_diff_str(key, dict1[key], '-'))
+                result.append(gen_diff_str(key, dict2[key], '+'))
         elif key in dict1:
-            result.append(f'- {key}: {dict1[key]}')
+            result.append(gen_diff_str(key, dict1[key], '-'))
         else:
-            result.append(f'+ {key}: {dict2[key]}')
+            result.append(gen_diff_str(key, dict2[key], '+'))
     return '{\n' + "\n".join(result) + '\n}'
