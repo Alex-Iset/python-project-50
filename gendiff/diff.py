@@ -1,10 +1,13 @@
 import json
 
 
+def load_json_file(path):
+    with open(path) as f:
+        return json.load(f)
+
+
 def generate_diff(file_path1, file_path2):
-    with open(file_path1) as f1, open(file_path2) as f2:
-        dict1 = json.load(f1)
-        dict2 = json.load(f2)
+    dict1, dict2 = load_json_file(file_path1), load_json_file(file_path2)
     result = []
     for key in sorted(set(dict1.keys()) | set(dict2.keys())):
         if key in dict1 and key in dict2:
