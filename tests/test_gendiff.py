@@ -1,7 +1,4 @@
-import json
 import os
-
-import yaml
 
 from gendiff import diff, load_json, load_yaml
 
