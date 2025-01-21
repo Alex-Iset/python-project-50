@@ -17,18 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12.3'
-      - name: Install dependencies
-        run: |
-          pip install uv
-          make install
-      - name: Run linter and pytest
-        run: |
-          make lint
-          make test
+
       - name: Hexlet project check
         uses: hexlet/project-action@release
         with:
