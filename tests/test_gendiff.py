@@ -1,6 +1,6 @@
 import os
 
-from gendiff import diff, load_json, load_yaml
+from gendiff import diff
 
 
 def get_test_data_path(file_name):
@@ -8,23 +8,23 @@ def get_test_data_path(file_name):
     return os.path.join(current_dir, 'test_data', file_name)
 
 
-file1 = load_json(get_test_data_path('file1.json'))
-file2 = load_json(get_test_data_path('file2.json'))
-file3 = load_yaml(get_test_data_path('file1.yaml'))
-file4 = load_yaml(get_test_data_path('file2.yaml'))
-result = '''{
-- follow: False
-  host: hexlet.io
-- proxy: 123.234.53.22
-- timeout: 50
-+ timeout: 20
-+ verbose: True
-}'''
+def read_result_file(path):
+    try:
+        with open(path, 'r') as f:
+            return f.read()
+    except FileNotFoundError:
+        raise FileNotFoundError(f"File not found: {path}")
 
 
-def test_json_gendiff():
+file1 = get_test_data_path('file1.json') # нужно будет переделать
+file2 = get_test_data_path('file2.json') # нужно будет переделать
+file3 = get_test_data_path('file1.yaml') # нужно будет переделать
+file4 = get_test_data_path('file2.yaml') # нужно будет переделать
+
+
+def test_gendiff():
+    result = read_result_file(
+        get_test_data_path('result_json_yaml.txt')
+    )
     assert diff(file1, file2) == result
-
-
-def test_yaml_gendiff():
-    assert diff(file1, file2) == result
+    assert diff(file3, file4) == result
