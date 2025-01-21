@@ -16,10 +16,10 @@ def read_result_file(path):
         raise FileNotFoundError(f"File not found: {path}")
 
 
-file1 = get_test_data_path('file1.json') # нужно будет переделать
-file2 = get_test_data_path('file2.json') # нужно будет переделать
-file3 = get_test_data_path('file1.yaml') # нужно будет переделать
-file4 = get_test_data_path('file2.yaml') # нужно будет переделать
+file1 = get_test_data_path('file1.json')  # нужно будет переделать
+file2 = get_test_data_path('file2.json')  # нужно будет переделать
+file3 = get_test_data_path('file1.yaml')  # нужно будет переделать
+file4 = get_test_data_path('file2.yaml')  # нужно будет переделать
 
 
 def test_gendiff():
