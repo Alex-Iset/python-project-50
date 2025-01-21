@@ -1,7 +1,9 @@
 import json
 import os
 
-from gendiff import diff
+import yaml
+
+from gendiff import diff, load_json, load_yaml
 
 
 def get_test_data_path(file_name):
@@ -9,13 +11,10 @@ def get_test_data_path(file_name):
     return os.path.join(current_dir, 'test_data', file_name)
 
 
-def read(file_path):
-    with open(file_path) as f:
-        return json.load(f)
-
-
-file1 = read(get_test_data_path('file1.json'))
-file2 = read(get_test_data_path('file2.json'))
+file1 = load_json(get_test_data_path('file1.json'))
+file2 = load_json(get_test_data_path('file2.json'))
+file3 = load_yaml(get_test_data_path('file1.yaml'))
+file4 = load_yaml(get_test_data_path('file2.yaml'))
 result = '''{
 - follow: False
   host: hexlet.io
@@ -26,5 +25,9 @@ result = '''{
 }'''
 
 
-def test_gendiff():
+def test_json_gendiff():
+    assert diff(file1, file2) == result
+
+
+def test_yaml_gendiff():
     assert diff(file1, file2) == result
