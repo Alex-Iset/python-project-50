@@ -8,5 +8,6 @@
 
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/Alex-Iset/python-project-50/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Alex-Iset/python-project-50/actions)
+[![check](https://github.com/Alex-Iset/python-project-50/actions/workflows/main.yml/badge.svg)](https://github.com/Alex-Iset/python-project-50/actions/workflows/main.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/c8e085926eb96f710b45/maintainability)](https://codeclimate.com/github/Alex-Iset/python-project-50/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/c8e085926eb96f710b45/test_coverage)](https://codeclimate.com/github/Alex-Iset/python-project-50/test_coverage)
