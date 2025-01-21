@@ -1,8 +1,15 @@
+from gendiff.utils import load_supp_file_form
+
+
 def gen_diff_str(key, value, prefix):
     return f'{prefix} {key}: {value}'
 
 
-def generate_diff(dict1, dict2):
+def generate_diff(path_file1, path_file2):
+    dict1, dict2 = (
+        load_supp_file_form(path_file1),
+        load_supp_file_form(path_file2)
+    )
     uniq_keys = sorted(set(dict1.keys()) | set(dict2.keys()))
     result = []
     for key in uniq_keys:
