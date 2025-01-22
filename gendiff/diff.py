@@ -1,4 +1,4 @@
-from gendiff.utils import load_supp_file_form
+from gendiff.loader import load_supp_file_form
 
 
 def gen_diff_str(key, value, prefix):

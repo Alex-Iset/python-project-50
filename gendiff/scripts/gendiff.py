@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-from gendiff.parser import read_and_pars
+from gendiff.parser import parse_args
 
 
 def main():
-    read_and_pars()
+    parse_args()
 
 
 if __name__ == "__main__":
