@@ -11,16 +11,6 @@ def format_value(value):
     return str(value)
 
 
-def format_dict(data):
-    result = {}
-    for key, value in data.items():
-        if "value" in value:
-            result[key] = value["value"]
-        else:
-            result[key] = value
-    return result
-
-
 def stylish(data, replacer=" ", repl_count=4):
     def inner(value, depth):
         if not isinstance(value, dict):
