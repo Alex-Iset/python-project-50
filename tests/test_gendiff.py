@@ -1,19 +1,12 @@
 import os
 
-from gendiff import diff
+from gendiff import generate_diff
+from gendiff.loader import load_supp_form_file
 
 
 def get_test_data_path(file_name):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(current_dir, 'test_data', file_name)
-
-
-def read_result_file(path):
-    try:
-        with open(path, 'r') as f:
-            return f.read()
-    except FileNotFoundError:
-        raise FileNotFoundError(f"File not found: {path}")
 
 
 file1 = get_test_data_path('file1.json')  # нужно будет переделать
@@ -23,8 +16,8 @@ file4 = get_test_data_path('file2.yaml')  # нужно будет передел
 
 
 def test_gendiff():
-    result = read_result_file(
-        get_test_data_path('result_json_yaml.txt')
+    result = load_supp_form_file(
+        get_test_data_path('stylish_json_yaml.txt')
     )
-    assert diff(file1, file2) == result
-    assert diff(file3, file4) == result
+    assert generate_diff(file1, file2) == result
+    assert generate_diff(file3, file4) == result
