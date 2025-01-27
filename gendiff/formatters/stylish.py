@@ -3,7 +3,7 @@ from itertools import chain
 from gendiff.consts import NEW_VALUE, OLD_VALUE, VALUE
 
 
-def form_value(value):
+def format_value(value):
     if isinstance(value, bool):
         return "true" if value else "false"
     elif value is None:
@@ -11,41 +11,39 @@ def form_value(value):
     return str(value)
 
 
-def form_repl(depth, flag=""):
-    forms = {
-        "add": " " * (depth - 2) + '+ ',
-        "remove": " " * (depth - 2) + '- ',
-        "empty": " " * (depth - 2) + '  '
-    }
-    return forms[flag]
-
-
-def stylish(data, depth=0, replacer=" ", repl_count=4):
-    if not isinstance(data, dict):
-        return form_value(data)
-    current_repl = replacer * depth
-    deep_repl = repl_count + depth
-    new_deep_repl = replacer * deep_repl
-    result = []
-    for key, val in data.items():
-        if isinstance(val, dict) and "added" in val.values():
-            result.append(f"{form_repl(deep_repl, "add")}{key}: "
-                          f"{stylish(val[VALUE], deep_repl)}")
-        elif isinstance(val, dict) and "removed" in val.values():
-            result.append(f"{form_repl(deep_repl, "remove")}{key}: "
-                          f"{stylish(val[VALUE], deep_repl)}")
-        elif isinstance(val, dict) and "unchanged" in val.values():
-            result.append(f"{form_repl(deep_repl, "empty")}{key}: "
-                          f"{stylish(val[VALUE], deep_repl)}")
-        elif isinstance(val, dict) and "changed" in val.values():
-            result.append(f"{form_repl(deep_repl, "remove")}{key}: "
-                          f"{stylish(val[OLD_VALUE], deep_repl)}")
-            result.append(f"{form_repl(deep_repl, "add")}{key}: "
-                          f"{stylish(val[NEW_VALUE], deep_repl)}")
-        elif isinstance(val, dict) and "nested" in val.values():
-            result.append(f"{new_deep_repl}{key}: "
-                          f"{stylish(val[VALUE], deep_repl)}")
-        else:
-            result.append(f"{new_deep_repl}{key}: "
-                          f"{stylish(val, deep_repl)}")
-    return "\n".join(chain("{", result, [current_repl + "}"]))
+def stylish(diff, replacer=" ", repl_count=4):
+    def inner(value, depth):
+        if not isinstance(value, dict):
+            return format_value(value)
+        current_deep = replacer * depth
+        deep_indent = repl_count + depth
+        new_deep_indent = replacer * deep_indent
+        result = []
+        for key, val in value.items():
+            form_repl = {
+                "add": replacer * (deep_indent - 2) + '+ ',
+                "remove": replacer * (deep_indent - 2) + '- ',
+                "empty": replacer * (deep_indent - 2) + '  '
+            }
+            if isinstance(val, dict) and "added" in val.values():
+                result.append(f"{form_repl["add"]}{key}: "
+                              f"{inner(val[VALUE], deep_indent)}")
+            elif isinstance(val, dict) and "removed" in val.values():
+                result.append(f"{form_repl["remove"]}{key}: "
+                              f"{inner(val[VALUE], deep_indent)}")
+            elif isinstance(val, dict) and "unchanged" in val.values():
+                result.append(f"{form_repl["empty"]}{key}: "
+                              f"{inner(val[VALUE], deep_indent)}")
+            elif isinstance(val, dict) and "changed" in val.values():
+                result.append(f"{form_repl["remove"]}{key}: "
+                              f"{inner(val[OLD_VALUE], deep_indent)}")
+                result.append(f"{form_repl["add"]}{key}: "
+                              f"{inner(val[NEW_VALUE], deep_indent)}")
+            elif isinstance(val, dict) and "nested" in val.values():
+                result.append(f"{new_deep_indent}{key}: "
+                              f"{inner(val[VALUE], deep_indent)}")
+            else:
+                result.append(f"{new_deep_indent}{key}: "
+                              f"{inner(val, deep_indent)}")
+        return "\n".join(chain("{", result, [current_deep + "}"]))
+    return inner(diff, 0)
