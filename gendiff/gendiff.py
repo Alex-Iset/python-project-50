@@ -1,6 +1,6 @@
 from gendiff.builder import build_diff
-from gendiff.formatters.stylish import stylish
 from gendiff.formatters.plain import plain
+from gendiff.formatters.stylish import stylish
 from gendiff.loader import load_supp_form_file
 
 
