@@ -4,11 +4,14 @@ install:
 run-help-gd:
 	uv run gendiff -h
 
-run-json-gd:
-	uv run gendiff tests/test_data/file1.json tests/test_data/file2.json
+run-json-stylish:
+	uv run gendiff -f stylish tests/test_data/file1.json tests/test_data/file2.json
 
-run-yaml-gd:
-	uv run gendiff tests/test_data/file1.yaml tests/test_data/file2.yaml
+run-yaml-stylish:
+	uv run gendiff -f stylish tests/test_data/file1.yaml tests/test_data/file2.yaml
+
+run-json-plain:
+	uv run gendiff -f plain tests/test_data/file1.json tests/test_data/file2.json
 
 test:
 	uv run pytest
