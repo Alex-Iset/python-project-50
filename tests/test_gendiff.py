@@ -16,8 +16,13 @@ file4 = get_test_data_path('file2.yaml')  # нужно будет передел
 
 
 def test_gendiff():
-    result = load_supp_form_file(
+    stylish = load_supp_form_file(
         get_test_data_path('stylish_json_yaml.txt')
     )
-    assert generate_diff(file1, file2) == result
-    assert generate_diff(file3, file4) == result
+    plain = load_supp_form_file(
+        get_test_data_path('plain_json_yaml.txt')
+    )
+    assert generate_diff(file1, file2, "stylish") == stylish
+    assert generate_diff(file3, file4, "stylish") == stylish
+    assert generate_diff(file1, file2, "plain") == plain
+    assert generate_diff(file3, file4, "plain") == plain
