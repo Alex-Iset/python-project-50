@@ -17,7 +17,10 @@ build:
 	uv build
 
 package-install:
-	uv tool install dist/python_project_50-0.1.0-py3-none-any.whl
+	uv tool install dist/*.whl
+
+package-uninstall:
+	uv tool uninstall dist/*.whl
 
 run-help:
 	uv run gendiff -h
