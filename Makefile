@@ -1,18 +1,6 @@
 install:
 	uv sync
 
-run-help-gd:
-	uv run gendiff -h
-
-run-stylish:
-	uv run gendiff -f stylish tests/fixtures/file1.json tests/fixtures/file2.json
-
-run-plain:
-	uv run gendiff -f plain tests/fixtures/file1.json tests/fixtures/file2.json
-
-run-json_form:
-	uv run gendiff -f json tests/fixtures/file1.json tests/fixtures/file2.json
-
 test:
 	uv run pytest
 
@@ -27,3 +15,18 @@ lint-fix:
 
 build:
 	uv build
+
+package-install:
+	uv tool install dist/python_project_50-0.1.0-py3-none-any.whl
+
+run-help:
+	uv run gendiff -h
+
+run-stylish:
+	uv run gendiff -f stylish tests/fixtures/file1.json tests/fixtures/file2.json
+
+run-plain:
+	uv run gendiff -f plain tests/fixtures/file1.json tests/fixtures/file2.json
+
+run-json:
+	uv run gendiff -f json tests/fixtures/file1.json tests/fixtures/file2.json
