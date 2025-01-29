@@ -5,13 +5,13 @@ run-help-gd:
 	uv run gendiff -h
 
 run-stylish:
-	uv run gendiff -f stylish tests/test_data/file1.json tests/test_data/file2.json
+	uv run gendiff -f stylish tests/fixtures/file1.json tests/fixtures/file2.json
 
 run-plain:
-	uv run gendiff -f plain tests/test_data/file1.json tests/test_data/file2.json
+	uv run gendiff -f plain tests/fixtures/file1.json tests/fixtures/file2.json
 
 run-json_form:
-	uv run gendiff -f json tests/test_data/file1.json tests/test_data/file2.json
+	uv run gendiff -f json tests/fixtures/file1.json tests/fixtures/file2.json
 
 test:
 	uv run pytest
