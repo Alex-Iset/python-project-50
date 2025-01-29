@@ -16,12 +16,6 @@ lint-fix:
 build:
 	uv build
 
-package-install:
-	uv tool install dist/*.whl
-
-package-uninstall:
-	uv tool uninstall dist/*.whl
-
 run-help:
 	uv run gendiff -h
 
