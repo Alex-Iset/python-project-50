@@ -33,6 +33,7 @@ A similar mechanism, for example, is used when outputting tests or when automati
 Utility features:
 * Support for different input formats: yaml, json
 * Generating a report in plain text, stylish, and json format
+[![asciicast](https://asciinema.org/a/Uh2tqclkXmKcYoMd6XhAO5gD0.svg)](https://asciinema.org/a/Uh2tqclkXmKcYoMd6XhAO5gD0)
 
 
 ## Install (Linux):
