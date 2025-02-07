@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from gendiff.gendiff import generate_diff
-from gendiff.loader import load_supp_form_file
+from gendiff.parser import load_supp_form_file
 
 
 def get_path(fixture_name):
