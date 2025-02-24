@@ -1,11 +1,9 @@
-from itertools import chain
-
-from gendiff.consts import NEW_VALUE, OLD_VALUE, VALUE
+from gendiff.consts import NEW_VALUE, OLD_VALUE, STATUS, VALUE
 
 
 def format_value(value):
     if isinstance(value, bool):
-        return "true" if value else "false"
+        return str(value).lower()
     elif value is None:
         return "null"
     return str(value)
@@ -14,6 +12,7 @@ def format_value(value):
 def stylish(diff, depth=0, replacer=" ", repl_count=4):
     if not isinstance(diff, dict):
         return format_value(diff)
+
     current_deep = replacer * depth
     deep_indent = repl_count + depth
     new_deep_indent = replacer * deep_indent
@@ -22,26 +21,44 @@ def stylish(diff, depth=0, replacer=" ", repl_count=4):
         "remove": replacer * (deep_indent - 2) + "- ",
         "empty": replacer * (deep_indent - 2) + "  "
     }
+
+    def format_line(indent, key, value):
+        return f"{indent}{key}: {stylish(value, deep_indent)}"
+
     result = []
     for key, val in diff.items():
-        if isinstance(val, dict) and "added" in val.values():
-            result.append(f"{form_indent["add"]}{key}: "
-                          f"{stylish(val[VALUE], deep_indent)}")
-        elif isinstance(val, dict) and "removed" in val.values():
-            result.append(f"{form_indent["remove"]}{key}: "
-                          f"{stylish(val[VALUE], deep_indent)}")
-        elif isinstance(val, dict) and "unchanged" in val.values():
-            result.append(f"{form_indent["empty"]}{key}: "
-                          f"{stylish(val[VALUE], deep_indent)}")
-        elif isinstance(val, dict) and "changed" in val.values():
-            result.append(f"{form_indent["remove"]}{key}: "
-                          f"{stylish(val[OLD_VALUE], deep_indent)}")
-            result.append(f"{form_indent["add"]}{key}: "
-                          f"{stylish(val[NEW_VALUE], deep_indent)}")
-        elif isinstance(val, dict) and "nested" in val.values():
-            result.append(f"{new_deep_indent}{key}: "
-                          f"{stylish(val[VALUE], deep_indent)}")
+        if isinstance(val, dict):
+            status = val.get(STATUS)
+            match status:
+                case "added":
+                    result.append(
+                        format_line(form_indent["add"], key, val[VALUE])
+                    )
+                case "removed":
+                    result.append(
+                        format_line(form_indent["remove"], key, val[VALUE])
+                    )
+                case "unchanged":
+                    result.append(
+                        format_line(form_indent["empty"], key, val[VALUE])
+                    )
+                case "changed":
+                    result.append(
+                        format_line(form_indent["remove"], key, val[OLD_VALUE])
+                    )
+                    result.append(
+                        format_line(form_indent["add"], key, val[NEW_VALUE])
+                    )
+                case "nested":
+                    result.append(
+                        format_line(new_deep_indent, key, val[VALUE])
+                    )
+                case _:
+                    result.append(
+                        format_line(new_deep_indent, key, val)
+                    )
         else:
-            result.append(f"{new_deep_indent}{key}: "
-                          f"{stylish(val, deep_indent)}")
-    return "\n".join(chain("{", result, [current_deep + "}"]))
+            result.append(
+                format_line(new_deep_indent, key, val)
+            )
+    return "{\n" + "\n".join(result) + "\n" + current_deep + "}"
