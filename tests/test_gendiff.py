@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from gendiff.gendiff import generate_diff
-from gendiff.parser import load_supp_form_file
+from gendiff.generate_diff import generate_diff
+from gendiff.parser import file_loader
 
 
 def get_path(fixture_name):
@@ -59,7 +59,7 @@ def get_path(fixture_name):
     ]
 )
 def test_gendiff(file1, file2, output, formatter):
-    load_output_file = load_supp_form_file(output)
+    load_output_file = file_loader(output)
     assert generate_diff(
         file1, file2, formatter=formatter
     ) == load_output_file
