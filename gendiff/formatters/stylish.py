@@ -1,64 +1,59 @@
-from gendiff.consts import NEW_VALUE, OLD_VALUE, STATUS, VALUE
+from gendiff.consts import INDENT, NEW_VALUE, OLD_VALUE, STATUS, STATUSES, VALUE
 
 
 def format_value(value):
     if isinstance(value, bool):
         return str(value).lower()
     elif value is None:
-        return "null"
+        return 'null'
     return str(value)
 
 
-def stylish(diff, depth=0, replacer=" ", repl_count=4):
-    if not isinstance(diff, dict):
-        return format_value(diff)
+def build_indent(depth):
+    return INDENT[:-2] + INDENT * depth
 
-    current_deep = replacer * depth
-    deep_indent = repl_count + depth
-    new_deep_indent = replacer * deep_indent
-    form_indent = {
-        "add": replacer * (deep_indent - 2) + "+ ",
-        "remove": replacer * (deep_indent - 2) + "- ",
-        "empty": replacer * (deep_indent - 2) + "  "
-    }
 
-    def format_line(indent, key, value):
-        return f"{indent}{key}: {stylish(value, deep_indent)}"
+def format_data(data, depth):
+    string_data = '\n'.join(data)
+    last_indent = build_indent(depth)[:-2]
+    return f'{string_data}\n{last_indent}'
 
-    result = []
-    for key, val in diff.items():
-        if isinstance(val, dict):
-            status = val.get(STATUS)
-            match status:
-                case "added":
-                    result.append(
-                        format_line(form_indent["add"], key, val[VALUE])
-                    )
-                case "removed":
-                    result.append(
-                        format_line(form_indent["remove"], key, val[VALUE])
-                    )
-                case "unchanged":
-                    result.append(
-                        format_line(form_indent["empty"], key, val[VALUE])
-                    )
-                case "changed":
-                    result.append(
-                        format_line(form_indent["remove"], key, val[OLD_VALUE])
-                    )
-                    result.append(
-                        format_line(form_indent["add"], key, val[NEW_VALUE])
-                    )
-                case "nested":
-                    result.append(
-                        format_line(new_deep_indent, key, val[VALUE])
-                    )
-                case _:
-                    result.append(
-                        format_line(new_deep_indent, key, val)
-                    )
-        else:
-            result.append(
-                format_line(new_deep_indent, key, val)
-            )
-    return "{\n" + "\n".join(result) + "\n" + current_deep + "}"
+
+def put_into_braces(formatted_data):
+    return f'{{\n{formatted_data}}}'
+
+
+def stylish(diff):
+    def _iter_stylish(data, depth=0):
+        if not isinstance(data, dict):
+            return format_value(data)
+
+        result = []
+        for key, val in data.items():
+            indent = build_indent(depth)
+            if isinstance(val, dict):
+                status = val.get(STATUS)
+                value = val.get(VALUE)
+                formatted_value = _iter_stylish(value, depth + 1)
+                match status:
+                    case STATUSES.ADDED:
+                        result.append(f'{indent}+ {key}: {formatted_value}')
+                    case STATUSES.REMOVED:
+                        result.append(f'{indent}- {key}: {formatted_value}')
+                    case STATUSES.UNCHANGED:
+                        result.append(f'{indent}  {key}: {formatted_value}')
+                    case STATUSES.UPDATED:
+                        old_value = _iter_stylish(val.get(OLD_VALUE), depth + 1)
+                        new_value = _iter_stylish(val.get(NEW_VALUE), depth + 1)
+                        result.append(f'{indent}- {key}: {old_value}')
+                        result.append(f'{indent}+ {key}: {new_value}')
+                    case STATUSES.NESTED:
+                        result.append(f'{indent}  {key}: {formatted_value}')
+                    case _:
+                        formatted_value = _iter_stylish(val, depth + 1)
+                        result.append(f'{indent}  {key}: {formatted_value}')
+            else:
+                formatted_value = _iter_stylish(val, depth + 1)
+                result.append(f'{indent}  {key}: {formatted_value}')
+        return put_into_braces(format_data(result, depth))
+    return _iter_stylish(diff)
