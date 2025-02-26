@@ -1,4 +1,4 @@
-from gendiff.consts import NEW_VALUE, OLD_VALUE, STATUS, VALUE
+from gendiff.consts import NEW_VALUE, OLD_VALUE, STATUS, STATUSES, VALUE
 
 
 def build_diff(dict1, dict2):
@@ -11,27 +11,27 @@ def build_diff(dict1, dict2):
         value2 = dict2.get(key)
         if key not in dict1:
             diff_dict[key] = {
-                STATUS: "added",
+                STATUS: STATUSES.ADDED,
                 VALUE: value2
             }
         elif key not in dict2:
             diff_dict[key] = {
-                STATUS: "removed",
+                STATUS: STATUSES.REMOVED,
                 VALUE: value1
             }
         elif value1 == value2:
             diff_dict[key] = {
-                STATUS: "unchanged",
+                STATUS: STATUSES.UNCHANGED,
                 VALUE: value1
             }
         elif isinstance(value1, dict) and isinstance(value2, dict):
             diff_dict[key] = {
-                STATUS: "nested",
+                STATUS: STATUSES.NESTED,
                 VALUE: build_diff(value1, value2)
             }
         else:
             diff_dict[key] = {
-                STATUS: "changed",
+                STATUS: STATUSES.UPDATED,
                 OLD_VALUE: value1,
                 NEW_VALUE: value2
             }
